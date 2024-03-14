@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@react-navigation/native": "^6.1.16",
+    "@react-navigation/stack": "^6.3.28",
+    "axios": "^1.6.7",
+    "expo": "~50.0.13",
+    "react-native-safe-area-context": "4.8.2",
+    "react-native-screens": "^3.29.0"
+  }
+}
