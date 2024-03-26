@@ -1,0 +1,23 @@
+Trello Pro Max
+
+Description
+Trello Pro Max est une application mobile innovante conçue pour améliorer la gestion de projet et la collaboration d'équipe sur Trello. Cette application permet aux utilisateurs de gérer facilement les membres assignés à des cartes spécifiques sur un tableau Trello, offrant une vue d'ensemble claire et une gestion simplifiée des tâches et des responsabilités au sein des projets.
+
+Configuration Requise
+Node.js (version recommandée: 14.x ou supérieure)
+npm (version 6.x) ou Yarn (version 1.22.x)
+React Native CLI (si vous travaillez sur un projet React Native non géré par Expo)
+Un compte Trello pour obtenir une clé API et un token
+
+
+Installation
+Clonez le dépôt du projet : git clone https://github.com/votre-username/trello-pro-max.git
+
+Installez les dépendances du projet : npm install
+
+Configuration de l'Environnement : 
+API_KEY=votre_cle_api_trello
+TOKEN=votre_token_trello
+
+Lancement de l'Application:
+npx react-native start
