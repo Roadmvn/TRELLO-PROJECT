@@ -16,9 +16,9 @@ const Card = ({ title, subtitle, imageUrl, children }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#bca1ff",
+    backgroundColor: "#333333", // Darker background
     borderRadius: 8,
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.25,
     shadowRadius: 4,
     shadowColor: "#000",
     shadowOffset: { height: 2, width: 0 },
@@ -38,10 +38,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 5,
+    color: "#ffffff", // Light text on dark background
   },
   subtitle: {
     fontSize: 16,
-    color: "#686868",
+    color: "#cccccc", // Lighter gray for subtitle
   },
   buttonContainer: {
     flexDirection: "row",
