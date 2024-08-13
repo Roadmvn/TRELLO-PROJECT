@@ -5,16 +5,18 @@ import {
   TouchableOpacity,
   ImageBackground,
   StyleSheet,
+  StatusBar,
 } from "react-native";
 
 const HomeScreen = ({ navigation }) => {
   return (
     <ImageBackground
       source={{
-        uri: "https://media.istockphoto.com/id/1266718523/fr/vectoriel/ampoule-avec-rayons-briller-symbole-d%C3%A9nergie-et-did%C3%A9e-isol%C3%A9-sur-le-fond-blanc.jpg?s=612x612&w=0&k=20&c=WuahES3MJJvJTajhClvzLQsobtVzF0vV1ytG4RTHY10=",
+        uri: "https://static.vecteezy.com/ti/vecteur-libre/p1/18990518-conception-de-fond-gris-noir-uni-pour-affiches-bannieres-presentations-publicites-et-depliants-isoles-sur-fond-noir-vectoriel.jpg",
       }}
       style={styles.backgroundImage}
     >
+      <StatusBar barStyle="light-content" />
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.button}
@@ -44,10 +46,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 50,
     fontWeight: "bold",
-    color: "red",
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
   },
   button: {
-    backgroundColor: "#000",
+    backgroundColor: "#333",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,

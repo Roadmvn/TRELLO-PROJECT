@@ -1,23 +1,49 @@
-Trello Pro Max
+# Trello Pro Max
 
-Description
+Ce fichier `README.md` fournit une documentation complète pour l'installation, la configuration et le lancement de l'application "Trello Pro Max". N'oubliez pas de remplacer les informations de l'API Trello avec vos propres clés et tokens avant de lancer l'application.
+
+
+## Description
 Trello Pro Max est une application mobile innovante conçue pour améliorer la gestion de projet et la collaboration d'équipe sur Trello. Cette application permet aux utilisateurs de gérer facilement les membres assignés à des cartes spécifiques sur un tableau Trello, offrant une vue d'ensemble claire et une gestion simplifiée des tâches et des responsabilités au sein des projets.
 
-Configuration Requise
-Node.js (version recommandée: 14.x ou supérieure)
-npm (version 6.x) ou Yarn (version 1.22.x)
-React Native CLI (si vous travaillez sur un projet React Native non géré par Expo)
-Un compte Trello pour obtenir une clé API et un token
+## Configuration Requise
+- Node.js (version recommandée: 14.x ou supérieure)
+- npm (version 6.x) ou Yarn (version 1.22.x)
+- React Native CLI (si vous travaillez sur un projet React Native non géré par Expo)
+- Un compte Trello pour obtenir une clé API et un token
+
+## Installation
+
+1. **Clonez le dépôt du projet :**
+   ```bash
+   git clone https://github.com/votre-username/trello-pro-max.git
 
 
-Installation
-Clonez le dépôt du projet : git clone https://github.com/votre-username/trello-pro-max.git
+Installez les dépendances du projet :
+npm install
 
-Installez les dépendances du projet : npm install
 
-Configuration de l'Environnement : 
+Installez ngrok globalement (si nécessaire) :
+sudo npm install --global @expo/ngrok@^4.1.0
+
+
+Effectuez une mise à jour de l'outil Expo (si nécessaire) :
+expo upgrade
+
+
+Installez les dépendances spécifiques du projet :
+npm install @react-navigation/stack@latest axios@latest react-native-dotenv@latest
+
+
+
+
+Configuration de l'Environnement
+Avant de lancer l'application, configurez les variables d'environnement pour l'accès à l'API Trello. Créez un fichier .env à la racine du projet et ajoutez les informations suivantes :
+
 API_KEY=votre_cle_api_trello
 TOKEN=votre_token_trello
 
-Lancement de l'Application:
-npx react-native start
+
+Lancement de l'Application
+Pour lancer l'application en utilisant Expo avec le tunnel pour accéder à l'application sur votre appareil :
+npx expo start --tunnel

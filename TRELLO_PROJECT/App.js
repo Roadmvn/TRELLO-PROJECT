@@ -9,6 +9,7 @@ import CardManager from "./CardManager";
 import MembreManager from "./MembreManager";
 
 const Stack = createStackNavigator();
+
 function App() {
   return (
     <NavigationContainer>
@@ -16,32 +17,86 @@ function App() {
         <Stack.Screen
           name="Orga Trello"
           component={HomeScreen}
-          options={{ title: "Accueil" }}
+          options={{
+            title: "Accueil",
+            headerStyle: {
+              backgroundColor: "#333",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
         />
         <Stack.Screen
           name="WorkspaceManager"
           component={WorkspaceManager}
-          options={{ title: "Workspace" }}
+          options={{
+            title: "Workspace",
+            headerStyle: {
+              backgroundColor: "#333",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
         />
         <Stack.Screen
           name="BoardManager"
           component={BoardManager}
-          options={{ title: "Tableaux" }}
+          options={{
+            title: "Tableaux",
+            headerStyle: {
+              backgroundColor: "#333",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
         />
         <Stack.Screen
           name="ListManager"
           component={ListManager}
-          options={{ title: "Listes" }}
+          options={{
+            title: "Listes",
+            headerStyle: {
+              backgroundColor: "#333",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
         />
         <Stack.Screen
           name="CardManager"
           component={CardManager}
-          options={{ title: "Cartes" }}
+          options={{
+            title: "Cartes",
+            headerStyle: {
+              backgroundColor: "#333",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
         />
         <Stack.Screen
           name="MembreManager"
           component={MembreManager}
-          options={{ title: "Membres" }}
+          options={{
+            title: "Membres",
+            headerStyle: {
+              backgroundColor: "#333",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

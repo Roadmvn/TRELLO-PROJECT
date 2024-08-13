@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
-  Button,
   Text,
   ScrollView,
   TouchableOpacity,
   Modal,
+  StyleSheet,
 } from "react-native";
 import axios from "axios";
-import styles from "./styles/globalStyles";
+import globalStyles from "./styles/globalStyles";
 import { useNavigation } from "@react-navigation/native";
 
 const API_KEY = process.env.API_KEY;
@@ -82,44 +82,40 @@ export default function ListManager({ route }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <TextInput
-        style={styles.input}
+        style={localStyles.input}
         placeholder="Nom de la nouvelle liste"
         value={listName}
         onChangeText={setListName}
+        placeholderTextColor="#ccc"
       />
-      <Button title="Ajouter Liste" onPress={handleCreateList} />
-      <ScrollView style={styles.workspaceContainer}>
+      <TouchableOpacity style={localStyles.createButton} onPress={handleCreateList}>
+        <Text style={localStyles.createButtonText}>Ajouter Liste</Text>
+      </TouchableOpacity>
+      <ScrollView style={localStyles.listContainer}>
         {lists.map((list) => (
-          <View key={list.id} style={styles.workspaceItem}>
+          <View key={list.id} style={localStyles.listItem}>
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("CardManager", { listId: list.id, boardId })
               }
             >
-              <Text style={[styles.workspaceText, { marginBottom: 10 }]}>
-                {list.name}
-              </Text>
+              <Text style={localStyles.listText}>{list.name}</Text>
             </TouchableOpacity>
-            <View style={styles.buttonContainer}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+            <View style={localStyles.actionButtonsContainer}>
+              <TouchableOpacity
+                style={[localStyles.actionButton, localStyles.updateButton]}
+                onPress={() => promptForUpdateList(list.id, list.name)}
               >
-                <Button
-                  title="Modifier"
-                  onPress={() => promptForUpdateList(list.id, list.name)}
-                />
-                <Button
-                  title="Supprimer"
-                  onPress={() => handleDeleteList(list.id)}
-                  color="red"
-                />
-              </View>
+                <Text style={localStyles.actionButtonText}>Modifier</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[localStyles.actionButton, localStyles.deleteButton]}
+                onPress={() => handleDeleteList(list.id)}
+              >
+                <Text style={localStyles.actionButtonText}>Supprimer</Text>
+              </TouchableOpacity>
             </View>
           </View>
         ))}
@@ -130,22 +126,122 @@ export default function ListManager({ route }) {
         visible={isUpdateModalVisible}
         onRequestClose={() => setIsUpdateModalVisible(false)}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+        <View style={localStyles.centeredView}>
+          <View style={localStyles.modalView}>
             <TextInput
-              style={styles.modalText}
+              style={localStyles.modalTextInput}
               placeholder="Nouveau nom de la liste"
               value={newListName}
               onChangeText={setNewListName}
+              placeholderTextColor="#ccc"
             />
-            <Button title="Update" onPress={handleUpdateList} />
-            <Button
-              title="Cancel"
+            <TouchableOpacity style={localStyles.modalButton} onPress={handleUpdateList}>
+              <Text style={localStyles.modalButtonText}>Mettre à jour</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[localStyles.modalButton, localStyles.cancelButton]}
               onPress={() => setIsUpdateModalVisible(false)}
-            />
+            >
+              <Text style={localStyles.modalButtonText}>Annuler</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
     </View>
   );
 }
+
+const localStyles = StyleSheet.create({
+  input: {
+    borderWidth: 1,
+    borderColor: "#444",
+    borderRadius: 5,
+    padding: 10,
+    color: "#fff",
+    backgroundColor: "#333",
+    marginVertical: 10,
+  },
+  createButton: {
+    backgroundColor: "#007bff",
+    padding: 15,
+    borderRadius: 5,
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  createButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  listContainer: {
+    marginTop: 20,
+  },
+  listItem: {
+    backgroundColor: "#444",
+    padding: 20,
+    marginVertical: 8,
+    borderRadius: 5,
+  },
+  listText: {
+    fontSize: 18,
+    color: "#fff",
+    marginBottom: 10,
+  },
+  actionButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  actionButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  updateButton: {
+    backgroundColor: "#28a745",
+  },
+  deleteButton: {
+    backgroundColor: "#dc3545",
+  },
+  actionButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalView: {
+    width: 300,
+    backgroundColor: "#444",
+    borderRadius: 5,
+    padding: 20,
+    alignItems: "center",
+  },
+  modalTextInput: {
+    width: "100%",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    marginBottom: 15,
+    padding: 10,
+    fontSize: 16,
+    color: "#fff",
+  },
+  modalButton: {
+    backgroundColor: "#007bff",
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5,
+    width: "100%",
+    alignItems: "center",
+  },
+  cancelButton: {
+    backgroundColor: "#6c757d",
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+});
