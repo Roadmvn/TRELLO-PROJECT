@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   TextInput,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   StyleSheet,
+  Alert,
 } from "react-native";
 import axios from "axios";
 import globalStyles from "./styles/globalStyles";
@@ -20,41 +21,68 @@ export default function WorkspaceManager({ navigation }) {
   const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
   const [updatingWorkspaceId, setUpdatingWorkspaceId] = useState("");
   const [newWorkspaceName, setNewWorkspaceName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    fetchWorkspaces();
-  }, []);
-
-  const fetchWorkspaces = async () => {
+  const fetchWorkspaces = useCallback(async () => {
+    setIsLoading(true);
     const url = `https://api.trello.com/1/members/me/organizations?key=${API_KEY}&token=${TOKEN}`;
     try {
       const response = await axios.get(url);
       setWorkspaces(response.data);
+      console.log("Workspaces récupérés :", response.data);
     } catch (error) {
-      console.error(error);
+      console.error("Erreur lors de la récupération des workspaces :", error);
+      Alert.alert("Erreur", "Impossible de récupérer les workspaces");
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchWorkspaces();
+  }, [fetchWorkspaces]);
 
   const createWorkspace = async () => {
-    const url = `https://api.trello.com/1/organizations?displayName=${encodeURIComponent(
-      workspaceName
-    )}&name=${encodeURIComponent(workspaceName)}&key=${API_KEY}&token=${TOKEN}`;
+    if (!workspaceName.trim()) {
+      Alert.alert("Erreur", "Le nom du workspace ne peut pas être vide");
+      return;
+    }
+
+    setIsLoading(true);
+    const url = `https://api.trello.com/1/organizations`;
+    const data = {
+      displayName: workspaceName,
+      name: workspaceName.replace(/\s+/g, '').toLowerCase(),
+      key: API_KEY,
+      token: TOKEN,
+    };
+
     try {
-      await axios.post(url);
+      const response = await axios.post(url, data);
+      console.log("Workspace créé :", response.data);
       setWorkspaceName("");
-      await fetchWorkspaces(); // Recharger les workspaces après la création
+      await fetchWorkspaces();
+      Alert.alert("Succès", "Workspace créé avec succès");
     } catch (error) {
-      console.error(error);
+      console.error("Erreur lors de la création du workspace :", error);
+      Alert.alert("Erreur", "Impossible de créer le workspace");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const deleteWorkspace = async (workspaceId) => {
+    setIsLoading(true);
     const url = `https://api.trello.com/1/organizations/${workspaceId}?key=${API_KEY}&token=${TOKEN}`;
     try {
       await axios.delete(url);
-      await fetchWorkspaces(); // Recharger les workspaces après la suppression
+      await fetchWorkspaces();
+      Alert.alert("Succès", "Workspace supprimé avec succès");
     } catch (error) {
-      console.error(error);
+      console.error("Erreur lors de la suppression du workspace :", error);
+      Alert.alert("Erreur", "Impossible de supprimer le workspace");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -64,23 +92,45 @@ export default function WorkspaceManager({ navigation }) {
     );
     if (workspaceToUpdate) {
       setUpdatingWorkspaceId(workspaceId);
-      setNewWorkspaceName(workspaceToUpdate.name);
+      setNewWorkspaceName(workspaceToUpdate.displayName);
       setIsUpdateModalVisible(true);
     }
   };
 
   const handleUpdateWorkspace = async () => {
-    const url = `https://api.trello.com/1/organizations/${updatingWorkspaceId}?displayName=${encodeURIComponent(
-      newWorkspaceName
-    )}&key=${API_KEY}&token=${TOKEN}`;
+    if (!newWorkspaceName.trim()) {
+      Alert.alert("Erreur", "Le nouveau nom ne peut pas être vide");
+      return;
+    }
+
+    setIsLoading(true);
+    const url = `https://api.trello.com/1/organizations/${updatingWorkspaceId}`;
+    const data = {
+      displayName: newWorkspaceName,
+      key: API_KEY,
+      token: TOKEN,
+    };
+
     try {
-      const response = await axios.put(url); // Attendre la réponse de l'API
-      console.log(response.data); // Afficher la réponse de l'API
-      await fetchWorkspaces(); // Recharger les workspaces après la mise à jour
-      setIsUpdateModalVisible(false); // Fermer le modal après la mise à jour
+      const response = await axios.put(url, data);
+      console.log("Workspace mis à jour :", response.data);
+      
+      setWorkspaces(prevWorkspaces => 
+        prevWorkspaces.map(workspace => 
+          workspace.id === updatingWorkspaceId 
+            ? {...workspace, displayName: newWorkspaceName} 
+            : workspace
+        )
+      );
+
+      setIsUpdateModalVisible(false);
       setNewWorkspaceName("");
+      Alert.alert("Succès", "Workspace mis à jour avec succès");
     } catch (error) {
       console.error("Erreur lors de la mise à jour du workspace :", error);
+      Alert.alert("Erreur", "Impossible de mettre à jour le workspace");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -93,8 +143,14 @@ export default function WorkspaceManager({ navigation }) {
         onChangeText={setWorkspaceName}
         placeholderTextColor="#ccc"
       />
-      <TouchableOpacity style={localStyles.createButton} onPress={createWorkspace}>
-        <Text style={localStyles.createButtonText}>Créer un Workspace</Text>
+      <TouchableOpacity 
+        style={localStyles.createButton} 
+        onPress={createWorkspace}
+        disabled={isLoading}
+      >
+        <Text style={localStyles.createButtonText}>
+          {isLoading ? "Chargement..." : "Créer un Workspace"}
+        </Text>
       </TouchableOpacity>
       <ScrollView style={localStyles.workspaceContainer}>
         {workspaces.map((workspace) => (
@@ -106,18 +162,20 @@ export default function WorkspaceManager({ navigation }) {
                 })
               }
             >
-              <Text style={localStyles.workspaceText}>{workspace.name}</Text>
+              <Text style={localStyles.workspaceText}>{workspace.displayName}</Text>
             </TouchableOpacity>
             <View style={localStyles.actionButtonsContainer}>
               <TouchableOpacity
                 style={[localStyles.actionButton, localStyles.updateButton]}
                 onPress={() => promptForUpdateWorkspace(workspace.id)}
+                disabled={isLoading}
               >
                 <Text style={localStyles.actionButtonText}>Modifier</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[localStyles.actionButton, localStyles.deleteButton]}
                 onPress={() => deleteWorkspace(workspace.id)}
+                disabled={isLoading}
               >
                 <Text style={localStyles.actionButtonText}>Supprimer</Text>
               </TouchableOpacity>
@@ -143,12 +201,16 @@ export default function WorkspaceManager({ navigation }) {
             <TouchableOpacity
               style={localStyles.modalButton}
               onPress={handleUpdateWorkspace}
+              disabled={isLoading}
             >
-              <Text style={localStyles.modalButtonText}>Mettre à jour</Text>
+              <Text style={localStyles.modalButtonText}>
+                {isLoading ? "Chargement..." : "Mettre à jour"}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[localStyles.modalButton, localStyles.cancelButton]}
               onPress={() => setIsUpdateModalVisible(false)}
+              disabled={isLoading}
             >
               <Text style={localStyles.modalButtonText}>Annuler</Text>
             </TouchableOpacity>
@@ -160,6 +222,7 @@ export default function WorkspaceManager({ navigation }) {
 }
 
 const localStyles = StyleSheet.create({
+  // ... (styles inchangés)
   input: {
     borderWidth: 1,
     borderColor: "#444",
@@ -250,5 +313,5 @@ const localStyles = StyleSheet.create({
   modalButtonText: {
     color: "#fff",
     fontWeight: "bold",
-  },
+},
 });
