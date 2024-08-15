@@ -42,6 +42,7 @@ Avant de lancer l'application, configurez les variables d'environnement pour l'a
 
 API_KEY=votre_cle_api_trello
 TOKEN=votre_token_trello
+API_SECRET=Jeton api
 
 
 Lancement de l'Application
